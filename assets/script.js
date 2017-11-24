@@ -6,45 +6,56 @@
   };
 
   // desctructuring assignment
+  // property value shorthands
   const {
-    apiKey : API_KEY,
-    newsAPIURL : NEWS_API_URL = 'https://newsapi.org/v2',
-    params : params = {
-      sources : SOURCES_PARAM = 'sources=',
-      apiKey : API_KEY_PARAM = 'apiKey='
+    apiKey,
+    newsAPIURL = 'https://newsapi.org/v2',
+    params = {
+      sources : sourcesParam = 'sources='
     },
-    paths : paths = {
-      sources : SOURCES_PATH = '/sources',
-      headlines : HEADLINES_PATH = '/top-headlines'
+    paths = {
+      sources : sourcesPath = '/sources',
+      headlines : headlinesPath = '/top-headlines'
     }
   } = settings;
 
   // template literals
-  const sourcesURL = `${NEWS_API_URL}${SOURCES_PATH}?${API_KEY_PARAM}${API_KEY}`;
-  const headlinesURL = `${NEWS_API_URL}${HEADLINES_PATH}?${SOURCES_PARAM}&${API_KEY_PARAM}${API_KEY}`;
+  const sourcesURL = `${newsAPIURL}${sourcesPath}`;
+  const headlinesURL = `${newsAPIURL}${headlinesPath}?${sourcesParam}`;
   const select = document.getElementById('news-channels');
   const newsResults = document.getElementById('news-results');
 
+  let requestSources = new Request(sourcesURL, {
+    headers : new Headers({
+      'X-Api-Key' : apiKey
+    })
+  });
+
   // fetch
-  fetch(sourcesURL).then((response) => {
+  fetch(requestSources).then((response) => {
     if (response.status !== 200) {
       console.log(response.status);
       return;
     }
     return response.json();
   }).then((data) => {
-    data.sources.forEach((source) => {
+    // array for of
+    for (const source of data.sources) {
       select.insertAdjacentHTML('beforeend', createListItem(source));
-    });
+    }
   });
 
   select.addEventListener('change', (event) => {
     const selectedValue = event.target.value;
-    const newHeadlinesURL = [headlinesURL.slice(0, headlinesURL.indexOf(`&${API_KEY_PARAM}`)),
-      selectedValue,
-      headlinesURL.slice(headlinesURL.indexOf(`&${API_KEY_PARAM}`), headlinesURL.length)].join('');
+    const newHeadlinesURL = headlinesURL + selectedValue;
 
-    fetch(newHeadlinesURL).then((response) => {
+    const requestHeadlines = new Request(newHeadlinesURL, {
+      headers : new Headers({
+        'X-Api-Key' : apiKey
+      })
+    });
+
+    fetch(requestHeadlines).then((response) => {
       if (response.status !== 200) {
         console.log(response.status);
         return;
