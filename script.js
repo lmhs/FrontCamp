@@ -1,6 +1,6 @@
 {
   // let and const
-  let settings = {
+  const settings = {
     apiKey : 'bdbeeb170f8c47a2b97aa0f6252bfb90'
   };
 
@@ -24,11 +24,17 @@
   const select = document.getElementById('news-channels');
   const newsResults = document.getElementById('news-results');
 
-  let requestSources = new Request(sourcesURL, {
-    headers : new Headers({
-      'X-Api-Key' : apiKey
-    })
-  });
+  class NewsRequest extends Request {
+    constructor(url) {
+      super(url, {
+        headers : new Headers({
+          'X-Api-Key' : apiKey
+        })
+      });
+    }
+  }
+
+  let requestSources = new NewsRequest(sourcesURL);
 
   // fetch
   // arrow function
@@ -49,11 +55,7 @@
     const selectedValue = event.target.value;
     const newHeadlinesURL = headlinesURL + selectedValue;
 
-    const requestHeadlines = new Request(newHeadlinesURL, {
-      headers : new Headers({
-        'X-Api-Key' : apiKey
-      })
-    });
+    const requestHeadlines = new NewsRequest(newHeadlinesURL);
 
     fetch(requestHeadlines).then(response => {
       if (response.status !== 200) {
