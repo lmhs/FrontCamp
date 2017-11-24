@@ -1,11 +1,10 @@
-// arrow function
-(() => {
+{
   // let and const
   let settings = {
     apiKey : 'bdbeeb170f8c47a2b97aa0f6252bfb90'
   };
 
-  // desctructuring assignment
+  // destructuring assignment
   // property value shorthands
   const {
     apiKey,
@@ -32,13 +31,14 @@
   });
 
   // fetch
-  fetch(requestSources).then((response) => {
+  // arrow function
+  fetch(requestSources).then(response => {
     if (response.status !== 200) {
       console.log(response.status);
       return;
     }
     return response.json();
-  }).then((data) => {
+  }).then(data => {
     // array for of
     for (const source of data.sources) {
       select.insertAdjacentHTML('beforeend', createListItem(source));
@@ -55,13 +55,13 @@
       })
     });
 
-    fetch(requestHeadlines).then((response) => {
+    fetch(requestHeadlines).then(response => {
       if (response.status !== 200) {
         console.log(response.status);
         return;
       }
       return response.json();
-    }).then((data) => {
+    }).then(data => {
       newsResults.innerHTML = '';
       // array for of
       for (const article of data.articles) {
@@ -77,4 +77,4 @@
   function createArticle(content) {
     return `<article>${content}</article>`;
   }
-})();
+}
