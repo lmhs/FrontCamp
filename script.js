@@ -36,19 +36,30 @@
 
   let requestSources = new NewsRequest(sourcesURL);
 
+  function handleErrors(response) {
+    if (!response.ok) {
+      throw Error(response.statusText);
+    }
+    return response;
+  }
+
+  function parseData(response) {
+    return response.json();
+  }
+
   // fetch
   // arrow function
-  fetch(requestSources).then(response => {
-    if (response.status !== 200) {
-      console.log(response.status);
-      return;
-    }
-    return response.json();
-  }).then(data => {
+  fetch(requestSources)
+  .then(handleErrors)
+  .then(parseData)
+  .then(data => {
     // array for of
     for (const source of data.sources) {
       select.insertAdjacentHTML('beforeend', createListItem(source));
     }
+  })
+  .catch(error => {
+    console.error(`Error status: ${error}`)
   });
 
   select.addEventListener('change', (event) => {
@@ -57,18 +68,18 @@
 
     const requestHeadlines = new NewsRequest(newHeadlinesURL);
 
-    fetch(requestHeadlines).then(response => {
-      if (response.status !== 200) {
-        console.log(response.status);
-        return;
-      }
-      return response.json();
-    }).then(data => {
+    fetch(requestHeadlines)
+    .then(handleErrors)
+    .then(parseData)
+    .then(data => {
       newsResults.innerHTML = '';
       // array for of
       for (const article of data.articles) {
         newsResults.insertAdjacentHTML('beforeend', createArticle(article.description));
       }
+    })
+    .catch(error => {
+      console.error(`Error status: ${error}`)
     });
   });
 
