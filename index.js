@@ -1,21 +1,20 @@
+// Modules (exports, import)
+import NewsRequest from './NewsRequest.js';
 {
+
   // let and const
   const settings = {
-    apiKey : 'bdbeeb170f8c47a2b97aa0f6252bfb90'
+    newsAPIURL : 'https://newsapi.org/v2'
   };
 
   // destructuring assignment
   // property value shorthands
+  // TODO: check why if type=module nested objects throw reference error
   const {
-    apiKey,
-    newsAPIURL = 'https://newsapi.org/v2',
-    params = {
-      sources : sourcesParam = 'sources='
-    },
-    paths = {
-      sources : sourcesPath = '/sources',
-      headlines : headlinesPath = '/top-headlines'
-    }
+    newsAPIURL,
+    sourcesParam : sourcesParam = 'sources=',
+    sourcesPath : sourcesPath = '/sources',
+    headlinesPath : headlinesPath = '/top-headlines'
   } = settings;
 
   // template literals
@@ -24,35 +23,28 @@
   const select = document.getElementById('news-channels');
   const newsResults = document.getElementById('news-results');
 
-  class NewsRequest extends Request {
-    constructor(url) {
-      super(url, {
-        headers : new Headers({
-          'X-Api-Key' : apiKey
-        })
-      });
+  const requestSources = new NewsRequest(sourcesURL);
+
+  // method definitions
+  let dataHelper = {
+    handleErrors(response) {
+      if (!response.ok) {
+        throw Error(response.statusText);
+      }
+      return response;
+    },
+
+    parseData(response) {
+      return response.json();
     }
-  }
-
-  let requestSources = new NewsRequest(sourcesURL);
-
-  function handleErrors(response) {
-    if (!response.ok) {
-      throw Error(response.statusText);
-    }
-    return response;
-  }
-
-  function parseData(response) {
-    return response.json();
-  }
+  };
 
   // fetch
   // arrow function
   fetch(requestSources)
-  .then(handleErrors)
-  .then(parseData)
-  .then(data => {
+  .then(dataHelper.handleErrors)
+  .then(dataHelper.parseData)
+  .then((data = {sources: []}) => {
     // array for of
     for (const source of data.sources) {
       select.insertAdjacentHTML('beforeend', createListItem(source));
@@ -69,9 +61,9 @@
     const requestHeadlines = new NewsRequest(newHeadlinesURL);
 
     fetch(requestHeadlines)
-    .then(handleErrors)
-    .then(parseData)
-    .then(data => {
+    .then(dataHelper.handleErrors)
+    .then(dataHelper.parseData)
+    .then((data = {articles: []}) => {
       newsResults.innerHTML = '';
       // array for of
       for (const article of data.articles) {
