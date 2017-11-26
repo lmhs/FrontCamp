@@ -15,6 +15,7 @@ import { categorize } from './Filter.js';
   const {
     newsAPIURL,
     sourcesParam : sourcesParam = 'sources=',
+    categoriesParam : categoriesParam = 'category=',
     sourcesPath : sourcesPath = '/sources',
     headlinesPath : headlinesPath = '/top-headlines'
   } = settings;
@@ -26,19 +27,26 @@ import { categorize } from './Filter.js';
   const newsCategories = document.getElementById('news-categories');
   const newsResults = document.getElementById('news-results');
 
-  const requestSources = new NewsRequest(sourcesURL);
-
   // method definitions
   let dataHelper = {
     handleErrors(response) {
       if (!response.ok) {
-        throw Error(response.statusText);
+        Promise.reject({
+          status : response.status,
+          statusText : response.statusText
+        });
       }
       return response;
     },
 
     parseData(response) {
-      return response.json();
+      return response.json()
+        .then(json => {
+          if (!response.ok) {
+            Promise.reject(response)
+          }
+          return json
+        });
     }
   };
 
@@ -58,32 +66,65 @@ import { categorize } from './Filter.js';
       }
     })
     .catch(error => {
-      console.error(`Error status: ${error}`)
+      console.error(`Error status: ${error.statusText}`)
     });
   }
 
-  // fetch all sources
-  // arrow function
-  fetch(requestSources)
-  .then(dataHelper.handleErrors)
-  .then(dataHelper.parseData)
-  .then((data = {sources: []}) => {
+  function loadSources(category) {
+    let loadSourcesURL;
 
-    // array for of
-    for (const source of data.sources) {
-      select.insertAdjacentHTML('beforeend', createListItem(source));
+    if (category && category !== 'all') {
+      loadSourcesURL = `${sourcesURL}?${categoriesParam}${category}`;
+    } else {
+      loadSourcesURL = sourcesURL;
     }
-    newsCategories.insertAdjacentHTML('beforeend', createCategories(categorize(data.sources)));
-    showHeadlines(data.sources[0].id);
-  })
-  .catch(error => {
-    console.error(`Error status: ${error}`)
-  });
+
+    const requestSources = new NewsRequest(loadSourcesURL);
+
+    // fetch all sources
+    // arrow function
+    fetch(requestSources)
+    .then(dataHelper.handleErrors)
+    .then(dataHelper.parseData)
+    .then((data = {sources: []}) => {
+      select.innerHTML = '';
+
+      // array for of
+      for (const source of data.sources) {
+        select.insertAdjacentHTML('beforeend', createListItem(source));
+      }
+      if (typeof category === 'undefined') {
+        newsCategories.insertAdjacentHTML('beforeend', createCategories(categorize(data.sources)));
+      }
+      showHeadlines(data.sources[0].id);
+    })
+    .catch(error => {
+      console.error(`Error status: ${error.statusText}`)
+    });
+  }
+
+  loadSources();
 
   select.addEventListener('change', (event) => {
     const selectedValue = event.target.value;
     showHeadlines(selectedValue);
   });
+
+  newsCategories.addEventListener('click', (event) => {
+    let categories = newsCategories.querySelectorAll('.js-category');
+    if (event.target && event.target.matches('.js-category')) {
+      const categoryValue = event.target.dataset.value;
+
+      categories.forEach((category) => {
+        if (category.dataset.value !== categoryValue) {
+          category.classList.remove('category--is-selected');
+        }
+      });
+
+      event.target.classList.add('category--is-selected');
+      loadSources(categoryValue);
+    }
+  })
 
   function createCategories(categories) {
     // Array.from(categories.keys()) also works
@@ -107,7 +148,7 @@ import { categorize } from './Filter.js';
   }
 
   function createCategory(category) {
-    return `<a href="javascript:void(0);" class="category${[category.selected ? ' category--is-selected' : '']}" data-value="${category.value}">${category.value}</a>`;
+    return `<a href="javascript:void(0);" class="category${[category.selected ? ' category--is-selected' : '']} js-category" data-value="${category.value}">${category.value}</a>`;
   }
 
   function createListItem(source) {
@@ -124,14 +165,18 @@ import { categorize } from './Filter.js';
       publishedAt : pubdate
     } = article;
 
-    return `<article class="article" pubdate="${pubdate}">
-        <a class="article-link" target="_blank" href="${url}">
+    if (desc === null && title === null || desc === null && title.length === 0) {
+      return '';
+    }
+
+    return `<article class="article" ${(pubdate !== null) ? `pubdate="${pubdate}">` : `` }
+        ${(imageSrc !== null) ? `<a class="article-link" target="_blank" href="${url}">
           <img class="article-img" src="${imageSrc}" alt="${title}">
-        </a>
+        </a>` : `` }
         <div class="article-body">
-          <h3 class="article-title"><a class="article-title-link" target="_blank" href="${url}">${title}</a></h3>
-          <span class="article-author">by ${author}</span>
-          <a class="article-link" target="_blank" href="${url}"><p class="article-content">${desc}</p></a>
+          ${(title !== null || title.length !== 0) ? `<h3 class="article-title"><a class="article-title-link" target="_blank" href="${url}">${title}</a></h3>` : `` }
+          ${(author !== null || author.length !== 0) ? `<span class="article-author">by ${author}</span>` : `` }
+          ${(desc !== null || desc.length !== 0) ? `<a class="article-link" target="_blank" href="${url}"><p class="article-content">${desc}</p></a>` : `` }
         </div>
       </article>`;
   }
