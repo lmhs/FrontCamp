@@ -54,7 +54,7 @@ import { categorize } from './Filter.js';
       newsResults.innerHTML = '';
       // array for of
       for (const article of data.articles) {
-        newsResults.insertAdjacentHTML('beforeend', createArticle(article.description));
+        newsResults.insertAdjacentHTML('beforeend', createArticle(article));
       }
     })
     .catch(error => {
@@ -73,8 +73,8 @@ import { categorize } from './Filter.js';
     for (const source of data.sources) {
       select.insertAdjacentHTML('beforeend', createListItem(source));
     }
-    // showHeadlines(data.sources[0].id);
     newsCategories.insertAdjacentHTML('beforeend', createCategories(categorize(data.sources)));
+    showHeadlines(data.sources[0].id);
   })
   .catch(error => {
     console.error(`Error status: ${error}`)
@@ -114,7 +114,25 @@ import { categorize } from './Filter.js';
     return `<option value="${source.id}">${source.name}</option>`;
   }
 
-  function createArticle(content) {
-    return `<article>${content}</article>`;
+  function createArticle(article) {
+    const {
+      author : author,
+      title : title,
+      description : desc,
+      url : url,
+      urlToImage : imageSrc,
+      publishedAt : pubdate
+    } = article;
+
+    return `<article class="article" pubdate="${pubdate}">
+        <a class="article-link" target="_blank" href="${url}">
+          <img class="article-img" src="${imageSrc}" alt="${title}">
+        </a>
+        <div class="article-body">
+          <h3 class="article-title"><a class="article-title-link" target="_blank" href="${url}">${title}</a></h3>
+          <span class="article-author">by ${author}</span>
+          <a class="article-link" target="_blank" href="${url}"><p class="article-content">${desc}</p></a>
+        </div>
+      </article>`;
   }
 }

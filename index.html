@@ -2,13 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Document</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>News</title>
+  <link href="./styles.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext" rel="stylesheet">
 </head>
 <body>
-  <h1>Select news channel:</h1>
-  <div id="news-categories"></div>
-  <select name="" id="news-channels"></select>
-  <section id="news-results"></section>
+  <main class="main">
+    <div class="container">
+      <section class="section-block">
+        <h2>Categories:</h1>
+        <div class="categories" id="news-categories"></div>
+      </section>
+      <section class="section-block">
+        <h2>News Channel:</h2>
+        <select class="channels" name="" id="news-channels"></select>
+      </section>
+      <section class="section-block">
+        <h2>Articles:</h2>
+        <section class="articles" id="news-results"></section>
+      </section>
+    </div>
+  </main>
   <script type="module" src="./index.js"></script>
 </body>
 </html>
