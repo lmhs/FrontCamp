@@ -1,8 +1,10 @@
 // Modules (exports, import)
 import NewsRequest from './NewsRequest.js';
+import { categorize } from './Filter.js';
 {
 
   // let and const
+  // settings for desctructuring assignment example
   const settings = {
     newsAPIURL : 'https://newsapi.org/v2'
   };
@@ -21,6 +23,7 @@ import NewsRequest from './NewsRequest.js';
   const sourcesURL = `${newsAPIURL}${sourcesPath}`;
   const headlinesURL = `${newsAPIURL}${headlinesPath}?${sourcesParam}`;
   const select = document.getElementById('news-channels');
+  const newsCategories = document.getElementById('news-categories');
   const newsResults = document.getElementById('news-results');
 
   const requestSources = new NewsRequest(sourcesURL);
@@ -39,25 +42,9 @@ import NewsRequest from './NewsRequest.js';
     }
   };
 
-  // fetch
-  // arrow function
-  fetch(requestSources)
-  .then(dataHelper.handleErrors)
-  .then(dataHelper.parseData)
-  .then((data = {sources: []}) => {
-    // array for of
-    for (const source of data.sources) {
-      select.insertAdjacentHTML('beforeend', createListItem(source));
-    }
-  })
-  .catch(error => {
-    console.error(`Error status: ${error}`)
-  });
-
-  select.addEventListener('change', (event) => {
-    const selectedValue = event.target.value;
-    const newHeadlinesURL = headlinesURL + selectedValue;
-
+  // load headlines from a selected source
+  function showHeadlines(source) {
+    const newHeadlinesURL = headlinesURL + source;
     const requestHeadlines = new NewsRequest(newHeadlinesURL);
 
     fetch(requestHeadlines)
@@ -67,19 +54,85 @@ import NewsRequest from './NewsRequest.js';
       newsResults.innerHTML = '';
       // array for of
       for (const article of data.articles) {
-        newsResults.insertAdjacentHTML('beforeend', createArticle(article.description));
+        newsResults.insertAdjacentHTML('beforeend', createArticle(article));
       }
     })
     .catch(error => {
       console.error(`Error status: ${error}`)
     });
+  }
+
+  // fetch all sources
+  // arrow function
+  fetch(requestSources)
+  .then(dataHelper.handleErrors)
+  .then(dataHelper.parseData)
+  .then((data = {sources: []}) => {
+
+    // array for of
+    for (const source of data.sources) {
+      select.insertAdjacentHTML('beforeend', createListItem(source));
+    }
+    newsCategories.insertAdjacentHTML('beforeend', createCategories(categorize(data.sources)));
+    showHeadlines(data.sources[0].id);
+  })
+  .catch(error => {
+    console.error(`Error status: ${error}`)
   });
+
+  select.addEventListener('change', (event) => {
+    const selectedValue = event.target.value;
+    showHeadlines(selectedValue);
+  });
+
+  function createCategories(categories) {
+    // Array.from(categories.keys()) also works
+    const keys = [...categories.keys()];
+    keys.unshift('all');
+
+    return keys.map((key, index) => {
+      let selected = false;
+      if (index === 0) {
+        selected = true;
+      }
+      return {
+        value: key,
+        selected
+      }
+    }).map(key => {
+      return createCategory(key);
+    }).reduce((html, item) => {
+      return html += item;
+    }, ``);
+  }
+
+  function createCategory(category) {
+    return `<a href="javascript:void(0);" class="category${[category.selected ? ' category--is-selected' : '']}" data-value="${category.value}">${category.value}</a>`;
+  }
 
   function createListItem(source) {
     return `<option value="${source.id}">${source.name}</option>`;
   }
 
-  function createArticle(content) {
-    return `<article>${content}</article>`;
+  function createArticle(article) {
+    const {
+      author : author,
+      title : title,
+      description : desc,
+      url : url,
+      urlToImage : imageSrc,
+      publishedAt : pubdate
+    } = article;
+
+    return `<article class="article" pubdate="${pubdate}">
+        <a class="article-link" target="_blank" href="${url}">
+          <img class="article-img" src="${imageSrc}" alt="${title}">
+        </a>
+        <div class="article-body">
+          <h3 class="article-title"><a class="article-title-link" target="_blank" href="${url}">${title}</a></h3>
+          <span class="article-author">by ${author}</span>
+          <a class="article-link" target="_blank" href="${url}"><p class="article-content">${desc}</p></a>
+        </div>
+      </article>`;
   }
 }
