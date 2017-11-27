@@ -95,7 +95,9 @@ select {
 
 .article-img {
   display: block;
-  width: 100%;
+  min-width: 100%;
+  height: 140px;
+  object-fit: cover;
   background-color: #fafafa;
 }
 
@@ -117,6 +119,14 @@ select {
 
 .article-content {
   font-size: 12px;
+}
+
+.footer {
+  background-color: #fafafa;
+}
+
+.footer-link {
+  color: #0092E3;
 }
 
 @media screen and (min-width: 500px) {

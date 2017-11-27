@@ -2,6 +2,7 @@
 import NewsRequest from './NewsRequest.js';
 import { categorize } from './Filter.js';
 import Article from './Article.js';
+import Category from './Category.js';
 {
 
   // let and const
@@ -107,12 +108,14 @@ import Article from './Article.js';
 
   loadSources();
 
-  select.addEventListener('change', (event) => {
+  function headlinesUpdate(event) {
     const selectedValue = event.target.value;
     showHeadlines(selectedValue);
-  });
+  }
 
-  newsCategories.addEventListener('click', (event) => {
+  select.addEventListener('change', headlinesUpdate);
+
+  function categoriesUpdate(event) {
     let categories = newsCategories.querySelectorAll('.js-category');
     if (event.target && event.target.matches('.js-category')) {
       const categoryValue = event.target.dataset.value;
@@ -126,7 +129,9 @@ import Article from './Article.js';
       event.target.classList.add('category--is-selected');
       loadSources(categoryValue);
     }
-  })
+  }
+
+  newsCategories.addEventListener('click', categoriesUpdate)
 
   function createCategories(categories) {
     // Array.from(categories.keys()) also works
@@ -143,14 +148,15 @@ import Article from './Article.js';
         selected
       }
     }).map(key => {
-      return createCategory(key);
+      const category = createCategory(key);
+      return category.render();
     }).reduce((html, item) => {
       return html += item;
     }, ``);
   }
 
-  function createCategory(category) {
-    return `<a href="javascript:void(0);" class="category${[category.selected ? ' category--is-selected' : '']} js-category" data-value="${category.value}">${category.value}</a>`;
+  function createCategory(data) {
+    return new Category(data);
   }
 
   function createListItem(source) {

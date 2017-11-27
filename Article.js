@@ -1,5 +1,5 @@
 export default class Article {
-  constructor(articleData,...params) {
+  constructor(articleData) {
     this.author = articleData.author;
     this.title = articleData.title;
     this.desc = articleData.description;
