@@ -1,6 +1,7 @@
 // Modules (exports, import)
 import NewsRequest from './NewsRequest.js';
 import { categorize } from './Filter.js';
+import Article from './Article.js';
 {
 
   // let and const
@@ -61,8 +62,9 @@ import { categorize } from './Filter.js';
     .then((data = {articles: []}) => {
       newsResults.innerHTML = '';
       // array for of
-      for (const article of data.articles) {
-        newsResults.insertAdjacentHTML('beforeend', createArticle(article));
+      for (const articleData of data.articles) {
+        const article = createArticle(articleData);
+        newsResults.insertAdjacentHTML('beforeend', article.render());
       }
     })
     .catch(error => {
@@ -155,29 +157,7 @@ import { categorize } from './Filter.js';
     return `<option value="${source.id}">${source.name}</option>`;
   }
 
-  function createArticle(article) {
-    const {
-      author : author,
-      title : title,
-      description : desc,
-      url : url,
-      urlToImage : imageSrc,
-      publishedAt : pubdate
-    } = article;
-
-    if (desc === null && title === null || desc === null && title.length === 0) {
-      return '';
-    }
-
-    return `<article class="article" ${(pubdate !== null) ? `pubdate="${pubdate}">` : `` }
-        ${(imageSrc !== null) ? `<a class="article-link" target="_blank" href="${url}">
-          <img class="article-img" src="${imageSrc}" alt="${title}">
-        </a>` : `` }
-        <div class="article-body">
-          ${(title !== null || title.length !== 0) ? `<h3 class="article-title"><a class="article-title-link" target="_blank" href="${url}">${title}</a></h3>` : `` }
-          ${(author !== null || author.length !== 0) ? `<span class="article-author">by ${author}</span>` : `` }
-          ${(desc !== null || desc.length !== 0) ? `<a class="article-link" target="_blank" href="${url}"><p class="article-content">${desc}</p></a>` : `` }
-        </div>
-      </article>`;
+  function createArticle(data) {
+    return new Article(data);
   }
 }

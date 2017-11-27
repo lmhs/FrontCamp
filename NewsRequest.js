@@ -9,7 +9,5 @@ export default class NewsRequest extends Request {
         'X-Api-Key' : apiKey
       })
     });
-
-
   }
 }
