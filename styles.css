@@ -1,0 +1,141 @@
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+  color: #333;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: color .2s ease-out, background-color .2s ease-out;
+}
+
+a:hover {
+  transition: color 0s, background-color 0s;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding-right: 20px;
+  padding-left: 20px;
+}
+
+.categories {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.category {
+  display: inline-block;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  padding: 10px 20px;
+  font-size: 15px;
+  color: rgba(0,0,0,.68);
+  background: rgba(0,0,0,.05);
+  border-radius: 3px;
+  border: none;
+  vertical-align: bottom;
+  text-decoration: none;
+}
+
+.category:hover,
+.category--is-selected {
+  background: rgba(0,0,0,.2);
+  color: rgba(0,0,0,.68);
+}
+
+select {
+  width: 100%;
+  padding: 5px 10px;
+  height: 40px;
+  font-size: 15px;
+  color: rgba(0,0,0,.68);
+  background: rgba(0,0,0,.05);
+  border-radius: 2px;
+  border: none;
+}
+
+.section-block {
+  margin-top: 20px;
+  padding-bottom: 20px;
+}
+
+.section-block:not(:last-child) {
+  border-bottom: 1px solid rgba(0,0,0,.05);
+}
+
+.article {
+  border-radius: 2px;
+  border: 1px solid rgba(0,0,0,.1);
+  margin-bottom: 20px;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.article-link {
+  display: block;
+}
+
+.article-body {
+  padding: 10px 15px 5px;
+}
+
+.article-img {
+  display: block;
+  width: 100%;
+  background-color: #fafafa;
+}
+
+.article-title {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.article-title-link:hover {
+  color: #479FC4;
+}
+
+.article-author {
+  font-size: 11px;
+  color: #999;
+}
+
+.article-content {
+  font-size: 12px;
+}
+
+@media screen and (min-width: 500px) {
+  .category {
+    padding: 5px 10px;
+  }
+
+  select {
+    max-width: 33%;
+    height: 30px;
+  }
+
+  .articles {
+    column-count: 2;
+  }
+}
+
+@media screen and (min-width: 740px) {
+  .articles {
+    column-count: 3;
+  }
+}
