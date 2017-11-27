@@ -6,7 +6,7 @@ import { categorize } from './Filter.js';
   // let and const
   // settings for desctructuring assignment example
   const settings = {
-    newsAPIURL : 'https://newsapi.org/v2'
+    ['newsAPIURL'] : 'https://newsapi.org/v2'
   };
 
   // destructuring assignment
