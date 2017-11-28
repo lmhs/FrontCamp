@@ -64,8 +64,10 @@ import Category from './Category.js';
       newsResults.innerHTML = '';
       // array for of
       for (const articleData of data.articles) {
-        const article = createArticle(articleData);
-        article.appendTo(newsResults);
+        if (articleData.title && articleData.description && articleData.url) {
+          const article = createArticle(articleData);
+          article.appendTo(newsResults);
+        }
       }
     })
     .catch(error => {
