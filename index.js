@@ -65,7 +65,7 @@ import Category from './Category.js';
       // array for of
       for (const articleData of data.articles) {
         const article = createArticle(articleData);
-        newsResults.insertAdjacentHTML('beforeend', article.render());
+        article.appendTo(newsResults);
       }
     })
     .catch(error => {
