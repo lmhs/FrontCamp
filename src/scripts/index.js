@@ -1,4 +1,5 @@
 // Modules (exports, import)
+import 'babel-polyfill';
 import NewsRequest from './NewsRequest.js';
 import { categorize } from './Filter.js';
 import Article from './Article.js';
