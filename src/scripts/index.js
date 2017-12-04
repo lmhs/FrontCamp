@@ -1,8 +1,10 @@
 // Modules (exports, import)
+// Polyfills
 import 'whatwg-fetch';
 import elementDatasetPolyfill from 'element-dataset';
 import 'nodelist-foreach-polyfill';
-import NewsRequest from './NewsRequest.js';
+// import NewsRequest from './NewsRequest.js';
+// Modules
 import { categorize } from './Filter.js';
 import Article from './Article.js';
 import Category from './Category.js';
@@ -19,6 +21,11 @@ import Category from './Category.js';
   const settings = {
     ['newsAPIURL'] : 'https://newsapi.org/v2'
   };
+
+  let apiKey = 'bdbeeb170f8c47a2b97aa0f6252bfb90';
+  const headers = new Headers({
+    'X-Api-Key' : apiKey
+  });
 
   // destructuring assignment
   // property value shorthands
@@ -64,7 +71,7 @@ import Category from './Category.js';
   // load headlines from a selected source
   function showHeadlines(source) {
     const newHeadlinesURL = headlinesURL + source;
-    const requestHeadlines = new NewsRequest(newHeadlinesURL);
+    const requestHeadlines = new Request(newHeadlinesURL, { headers });
 
     fetch(requestHeadlines)
     .then(dataHelper.handleErrors)
@@ -93,7 +100,7 @@ import Category from './Category.js';
       loadSourcesURL = sourcesURL;
     }
 
-    const requestSources = new NewsRequest(loadSourcesURL);
+    const requestSources = new Request(loadSourcesURL, { headers });
 
     // fetch all sources
     // arrow function

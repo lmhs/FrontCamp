@@ -1,5 +1,5 @@
 // Classes
-export default class NewsRequest extends Request {
+class NewsRequest extends Request {
 
   constructor(url) {
     let apiKey = 'bdbeeb170f8c47a2b97aa0f6252bfb90';
@@ -10,7 +10,7 @@ export default class NewsRequest extends Request {
     super(url, {
       headers
     });
-
-    // Request.call(this, url, {headers});
   }
 }
+
+export {NewsRequest as default}
