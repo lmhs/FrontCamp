@@ -10,5 +10,7 @@ export default class NewsRequest extends Request {
     super(url, {
       headers
     });
+
+    // Request.call(this, url, {headers});
   }
 }

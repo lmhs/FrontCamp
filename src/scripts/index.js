@@ -1,10 +1,18 @@
 // Modules (exports, import)
-import 'babel-polyfill';
+import 'whatwg-fetch';
+import elementDatasetPolyfill from 'element-dataset';
+import 'nodelist-foreach-polyfill';
 import NewsRequest from './NewsRequest.js';
 import { categorize } from './Filter.js';
 import Article from './Article.js';
 import Category from './Category.js';
 {
+
+  elementDatasetPolyfill();
+
+  if (!Element.prototype.matches) {
+    Element.prototype.matches = Element.prototype.msMatchesSelector;
+  }
 
   // let and const
   // settings for desctructuring assignment example
@@ -121,7 +129,8 @@ import Category from './Category.js';
   function categoriesUpdate(event) {
     let categories = newsCategories.querySelectorAll('.js-category');
     if (event.target && event.target.matches('.js-category')) {
-      const categoryValue = event.target.dataset.value;
+      const categoryEl = event.target;
+      const categoryValue = categoryEl.dataset.value;
 
       categories.forEach((category) => {
         if (category.dataset.value !== categoryValue) {

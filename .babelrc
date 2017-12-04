@@ -7,8 +7,6 @@
     }]
   ],
   "plugins": [
-    ["babel-plugin-transform-builtin-extend", {
-      globals: ["Request"]
-    }]
+
   ]
 }
