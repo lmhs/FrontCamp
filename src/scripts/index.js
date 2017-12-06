@@ -1,15 +1,31 @@
 // Modules (exports, import)
-import NewsRequest from './NewsRequest.js';
+// Polyfills
+import 'whatwg-fetch';
+import elementDatasetPolyfill from 'element-dataset';
+import 'nodelist-foreach-polyfill';
+// import NewsRequest from './NewsRequest.js';
+// Modules
 import { categorize } from './Filter.js';
 import Article from './Article.js';
 import Category from './Category.js';
 {
+
+  elementDatasetPolyfill();
+
+  if (!Element.prototype.matches) {
+    Element.prototype.matches = Element.prototype.msMatchesSelector;
+  }
 
   // let and const
   // settings for desctructuring assignment example
   const settings = {
     ['newsAPIURL'] : 'https://newsapi.org/v2'
   };
+
+  let apiKey = 'bdbeeb170f8c47a2b97aa0f6252bfb90';
+  const headers = new Headers({
+    'X-Api-Key' : apiKey
+  });
 
   // destructuring assignment
   // property value shorthands
@@ -55,7 +71,7 @@ import Category from './Category.js';
   // load headlines from a selected source
   function showHeadlines(source) {
     const newHeadlinesURL = headlinesURL + source;
-    const requestHeadlines = new NewsRequest(newHeadlinesURL);
+    const requestHeadlines = new Request(newHeadlinesURL, { headers });
 
     fetch(requestHeadlines)
     .then(dataHelper.handleErrors)
@@ -84,7 +100,7 @@ import Category from './Category.js';
       loadSourcesURL = sourcesURL;
     }
 
-    const requestSources = new NewsRequest(loadSourcesURL);
+    const requestSources = new Request(loadSourcesURL, { headers });
 
     // fetch all sources
     // arrow function
@@ -120,7 +136,8 @@ import Category from './Category.js';
   function categoriesUpdate(event) {
     let categories = newsCategories.querySelectorAll('.js-category');
     if (event.target && event.target.matches('.js-category')) {
-      const categoryValue = event.target.dataset.value;
+      const categoryEl = event.target;
+      const categoryValue = categoryEl.dataset.value;
 
       categories.forEach((category) => {
         if (category.dataset.value !== categoryValue) {
