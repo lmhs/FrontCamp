@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
+console.log(process.env.NODE_ENV);
 const env = process.env.NODE_ENV || 'development';
 
 const commonConfig = {
@@ -91,7 +92,7 @@ const developmentConfig = () => {
   return Object.assign({}, commonConfig, config);
 }
 
-module.exports = env => {
+module.exports = () => {
   if (env === 'production') {
     return productionConfig();
   }
