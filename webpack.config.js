@@ -22,7 +22,8 @@ module.exports = {
     // enables production/dev/etc. environment
     new webpack.DefinePlugin({
       NODE_ENV: JSON.stringify(NODE_ENV)
-    })
+    }),
+    new webpack.NoEmitOnErrorsPlugin()
   ],
   resolve: {
     // resolve modules path and extension
