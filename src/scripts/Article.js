@@ -22,22 +22,22 @@ export default class Article {
       </a>`);
   }
 
-  addImg() {
-    loadImage(this.imageSrc)
-      .then(image => {
-        this.renderImg();
-      })
-      .catch(errorMsg => {
-        console.error(errorMsg);
-      })
+  async addImg() {
+    await loadImage(this.imageSrc)
+    await ((image) => {
+      this.renderImg();
+    })();
   }
 
   render() {
     if (this.imageSrc) {
-      this.addImg();
+      this.addImg()
+        .catch(errorMsg => {
+          console.error(errorMsg);
+        });
     }
 
-    return `<article data-url="${this.url}" class="article" ${this.pubdate ? `pubdate="${this.pubdate}">` : `` }
+    return `<article data-url="${this.url}" class="article" ${this.pubdate ? `pubdate="${this.pubdate}"` : `` }>
         <div class="article-body">
           ${this.title ? `<h3 class="article-title"><a class="article-title-link" target="_blank" href="${this.url}">${this.title}</a></h3>` : `` }
           ${this.author ? `<span class="article-author">by ${this.author}</span>` : `` }

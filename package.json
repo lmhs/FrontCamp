@@ -21,6 +21,7 @@
     "babel-loader": "^7.1.2",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
+    "babel-preset-es2017": "^6.24.1",
     "element-dataset": "^2.2.6",
     "nodelist-foreach-polyfill": "^1.2.0",
     "webpack": "^3.9.1",
