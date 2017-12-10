@@ -4,8 +4,9 @@
   "description": "Repository containing tasks for FrontCamp",
   "main": "index.js",
   "scripts": {
-    "dev": "NODE_ENV=development webpack",
-    "prod": "NODE_ENV=production webpack"
+    "watch": "webpack --watch",
+    "dev": "webpack-dev-server --env development --open",
+    "prod": "webpack --env production"
   },
   "repository": {
     "type": "git",
@@ -32,6 +33,7 @@
     "style-loader": "^0.19.0",
     "url-loader": "^0.6.2",
     "webpack": "^3.9.1",
+    "webpack-dev-server": "^2.9.7",
     "whatwg-fetch": "^2.0.3"
   }
 }

@@ -13,7 +13,7 @@ import 'styles.css';
 import './github-icon.js';
 
 {
-  if (NODE_ENV === 'development') {
+  if (env === 'development') {
     console.log('Application is started');
   }
 

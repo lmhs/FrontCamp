@@ -13,7 +13,12 @@ npm install
 Run webpack
 
 - for development:
-  - enables watcher and sourcemaps
+```
+npm run watch
+```
+
+in another terminal window run server:
+
 ```
 npm run dev
 ```

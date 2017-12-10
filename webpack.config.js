@@ -2,28 +2,29 @@ const path = require('path');
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
-const NODE_ENV = process.env.NODE_ENV || 'development';
+const env = process.env.NODE_ENV || 'development';
 
-module.exports = {
+const commonConfig = {
   entry: ['whatwg-fetch', 'element-dataset', 'babel-polyfill', path.resolve(__dirname,'src/scripts/index.js')],
   output: {
-    'filename': 'bundle.js',
+    filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist/scripts')
   },
   // watcher
-  watch: NODE_ENV === 'development',
+  watch: env === 'development',
   watchOptions: {
     aggregateTimeout: 500,
     ignored: /node_modules/,
     poll: 1000
   },
   // sourcemaps
-  devtool: NODE_ENV === 'development' ? 'inline-cheap-module-source-map' : false,
+  devtool: env === 'development' ? 'inline-cheap-module-source-map' : false,
+  // webpack-dev-server
   plugins: [
     new CleanWebpackPlugin(['dist']),
     // enables production/dev/etc. environment
     new webpack.DefinePlugin({
-      NODE_ENV: JSON.stringify(NODE_ENV)
+      env: JSON.stringify(env)
     }),
     new webpack.NoEmitOnErrorsPlugin()
   ],
@@ -71,4 +72,29 @@ module.exports = {
       }
     ]
   }
+}
+
+const productionConfig = () => commonConfig;
+
+const developmentConfig = () => {
+  const config = {
+    devServer: {
+      contentBase: [
+        path.resolve(__dirname, './'),
+        path.resolve(__dirname, './dist/scripts/')
+      ],
+      stats: 'errors-only',
+      host: process.env.HOST,
+      port: process.env.PORT
+    }
+  };
+  return Object.assign({}, commonConfig, config);
+}
+
+module.exports = env => {
+  if (env === 'production') {
+    return productionConfig();
+  }
+
+  return developmentConfig();
 }
