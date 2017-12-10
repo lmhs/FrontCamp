@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
@@ -19,6 +20,7 @@ module.exports = {
   // sourcemaps
   devtool: NODE_ENV === 'development' ? 'inline-cheap-module-source-map' : false,
   plugins: [
+    new CleanWebpackPlugin(['dist']),
     // enables production/dev/etc. environment
     new webpack.DefinePlugin({
       NODE_ENV: JSON.stringify(NODE_ENV)
@@ -35,6 +37,15 @@ module.exports = {
     moduleExtensions: ['-loader']
   },
   module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [
+          'style',
+          'css'
+        ]
+      }
+    ],
     loaders: [{
       test: /\.js$/,
       include: path.join(__dirname, 'src/scripts'),

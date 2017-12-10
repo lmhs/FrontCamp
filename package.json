@@ -23,8 +23,11 @@
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-es2017": "^6.24.1",
+    "clean-webpack-plugin": "^0.1.17",
+    "css-loader": "^0.28.7",
     "element-dataset": "^2.2.6",
     "nodelist-foreach-polyfill": "^1.2.0",
+    "style-loader": "^0.19.0",
     "webpack": "^3.9.1",
     "whatwg-fetch": "^2.0.3"
   }

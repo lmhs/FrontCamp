@@ -8,6 +8,8 @@ import 'nodelist-foreach-polyfill';
 import { categorize } from './Filter.js';
 import Article from './Article.js';
 import Category from './Category.js';
+
+import '../styles/styles.css';
 {
   if (NODE_ENV === 'development') {
     console.log('Application is started');
