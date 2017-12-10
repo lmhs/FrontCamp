@@ -10,6 +10,8 @@ import Article from './Article.js';
 import Category from './Category.js';
 
 import 'styles.css';
+import './github-icon.js';
+
 {
   if (NODE_ENV === 'development') {
     console.log('Application is started');

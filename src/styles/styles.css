@@ -135,6 +135,11 @@ select {
   color: #0092E3;
 }
 
+.github-icon {
+  height: 1rem;
+  margin: 0 4px;
+}
+
 @media screen and (min-width: 500px) {
   .category {
     padding: 5px 10px;

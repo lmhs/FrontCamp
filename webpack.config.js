@@ -30,7 +30,11 @@ module.exports = {
   resolve: {
     // resolve modules path and extension
     extensions: ['.js'],
-    modules: [path.join(__dirname, 'src/scripts'), path.join(__dirname, 'src/styles'), 'node_modules']
+    modules: [
+      path.join(__dirname, 'src/scripts'),
+      path.join(__dirname, 'src/styles'),
+      'node_modules'
+    ]
   },
   resolveLoader: {
     // use 'babel' naming instead of 'babel-loader'
@@ -54,6 +58,16 @@ module.exports = {
         test: /\.js$/,
         include: path.join(__dirname, 'src/scripts'),
         use: 'babel'
+      }, {
+        test: /\.(png|jpg|gif)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 8192
+            }
+          }
+        ]
       }
     ]
   }
