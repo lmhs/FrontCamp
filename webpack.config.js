@@ -6,6 +6,11 @@ module.exports = {
     'filename': 'bundle.js',
     path: path.resolve(__dirname, 'dist/scripts')
   },
+  watch: true,
+  watchOptions: {
+    aggregateTimeout: 300
+  },
+  devtool: 'inline-cheap-module-source-map',
   module: {
     rules: [
       {

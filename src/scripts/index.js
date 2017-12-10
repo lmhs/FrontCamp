@@ -77,7 +77,6 @@ import Category from './Category.js';
   function showHeadlines(source) {
     const newHeadlinesURL = headlinesURL + source;
     const requestHeadlines = new Request(newHeadlinesURL, { headers });
-    // fetchHeadlines(requestHeadlines);
     fetchHeadlines(requestHeadlines)
       .catch(error => {
         console.error(`Error status: ${error.statusText}`)
