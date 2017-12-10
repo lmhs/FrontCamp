@@ -8,7 +8,24 @@
 ```
 npm install
 ```
-3. Run Babel-cli
+
+### Project run:
+Run webpack
+
+- for development:
 ```
-npm run build
+npm run watch
 ```
+
+in another terminal window run server:
+
+```
+npm run dev
+```
+
+- for production:
+  - no watcher, just builds
+```
+npm run prod
+```
+

@@ -3,12 +3,19 @@
 import 'whatwg-fetch';
 import elementDatasetPolyfill from 'element-dataset';
 import 'nodelist-foreach-polyfill';
-// import NewsRequest from './NewsRequest.js';
+//// import NewsRequest from './NewsRequest.js';
 // Modules
 import { categorize } from './Filter.js';
 import Article from './Article.js';
 import Category from './Category.js';
+
+import 'styles.css';
+import './github-icon.js';
+
 {
+  if (env === 'development') {
+    console.log('Application is started');
+  }
 
   elementDatasetPolyfill();
 
@@ -55,40 +62,32 @@ import Category from './Category.js';
         });
       }
       return response;
-    },
-
-    parseData(response) {
-      return response.json()
-        .then(json => {
-          if (!response.ok) {
-            Promise.reject(response)
-          }
-          return json
-        });
     }
   };
+
+  async function fetchHeadlines(requestHeadlines) {
+    let response = await fetch(requestHeadlines);
+    response = await dataHelper.handleErrors(response);
+    const data = await response.json();
+
+    newsResults.innerHTML = '';
+    // array for of
+    for (const articleData of data.articles) {
+      if (articleData.title && articleData.description && articleData.url) {
+        const article = createArticle(articleData);
+        article.appendTo(newsResults);
+      }
+    }
+  }
 
   // load headlines from a selected source
   function showHeadlines(source) {
     const newHeadlinesURL = headlinesURL + source;
     const requestHeadlines = new Request(newHeadlinesURL, { headers });
-
-    fetch(requestHeadlines)
-    .then(dataHelper.handleErrors)
-    .then(dataHelper.parseData)
-    .then((data = {articles: []}) => {
-      newsResults.innerHTML = '';
-      // array for of
-      for (const articleData of data.articles) {
-        if (articleData.title && articleData.description && articleData.url) {
-          const article = createArticle(articleData);
-          article.appendTo(newsResults);
-        }
-      }
-    })
-    .catch(error => {
-      console.error(`Error status: ${error.statusText}`)
-    });
+    fetchHeadlines(requestHeadlines)
+      .catch(error => {
+        console.error(`Error status: ${error.statusText}`)
+      });
   }
 
   function loadSources(category) {
@@ -104,10 +103,11 @@ import Category from './Category.js';
 
     // fetch all sources
     // arrow function
-    fetch(requestSources)
-    .then(dataHelper.handleErrors)
-    .then(dataHelper.parseData)
-    .then((data = {sources: []}) => {
+    async function makeSourcesRequest(requestSources) {
+      let response = await fetch(requestSources);
+      response = await dataHelper.handleErrors(response);
+      const data = await response.json();
+
       select.innerHTML = '';
 
       // array for of
@@ -118,10 +118,12 @@ import Category from './Category.js';
         newsCategories.insertAdjacentHTML('beforeend', createCategories(categorize(data.sources)));
       }
       showHeadlines(data.sources[0].id);
-    })
-    .catch(error => {
-      console.error(`Error status: ${error.statusText}`)
-    });
+    }
+
+    makeSourcesRequest(requestSources)
+      .catch(error => {
+        console.error(`Error status: ${error.statusText}`)
+      });
   }
 
   loadSources();

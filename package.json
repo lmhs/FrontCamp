@@ -4,7 +4,9 @@
   "description": "Repository containing tasks for FrontCamp",
   "main": "index.js",
   "scripts": {
-    "build": "webpack"
+    "watch": "webpack --watch",
+    "dev": "NODE_ENV=development webpack-dev-server --open",
+    "prod": "NODE_ENV=production webpack -p"
   },
   "repository": {
     "type": "git",
@@ -17,15 +19,21 @@
   },
   "homepage": "https://github.com/lmhs/FrontCamp#readme",
   "devDependencies": {
+    "autoprefixer": "^7.2.2",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
-    "babel-plugin-transform-es2015-classes": "^6.24.1",
-    "babel-plugin-transform-proto-to-assign": "^6.26.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
+    "babel-preset-es2017": "^6.24.1",
+    "clean-webpack-plugin": "^0.1.17",
+    "css-loader": "^0.28.7",
     "element-dataset": "^2.2.6",
     "nodelist-foreach-polyfill": "^1.2.0",
+    "postcss-loader": "^2.0.9",
+    "style-loader": "^0.19.0",
+    "url-loader": "^0.6.2",
     "webpack": "^3.9.1",
+    "webpack-dev-server": "^2.9.7",
     "whatwg-fetch": "^2.0.3"
   }
 }
