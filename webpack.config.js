@@ -30,7 +30,7 @@ module.exports = {
   resolve: {
     // resolve modules path and extension
     extensions: ['.js'],
-    modules: [path.join(__dirname, 'src/scripts'), 'node_modules']
+    modules: [path.join(__dirname, 'src/scripts'), path.join(__dirname, 'src/styles'), 'node_modules']
   },
   resolveLoader: {
     // use 'babel' naming instead of 'babel-loader'
@@ -40,16 +40,21 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
+        include: path.resolve(__dirname, 'src/styles'),
         use: [
           'style',
-          'css'
+          {
+            loader: 'css', options: {
+              importLoaders: 1
+            }
+          },
+          'postcss'
         ]
+      }, {
+        test: /\.js$/,
+        include: path.join(__dirname, 'src/scripts'),
+        use: 'babel'
       }
-    ],
-    loaders: [{
-      test: /\.js$/,
-      include: path.join(__dirname, 'src/scripts'),
-      loader: 'babel'
-    }]
+    ]
   }
 }

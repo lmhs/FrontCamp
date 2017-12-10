@@ -1,6 +1,7 @@
 html {
   box-sizing: border-box;
   height: 100%;
+  user-select: none;
 }
 
 *,
@@ -84,8 +85,6 @@ select {
   border-radius: 2px;
   border: 1px solid rgba(0,0,0,.1);
   margin-bottom: 20px;
-  -webkit-column-break-inside: avoid;
-  page-break-inside: avoid;
   break-inside: avoid;
 }
 
