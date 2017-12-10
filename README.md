@@ -8,7 +8,19 @@
 ```
 npm install
 ```
-3. Run Babel-cli
+
+### Project run:
+Run webpack
+
+- for development:
+  - enables watcher and sourcemaps
 ```
-npm run build
+npm run dev
 ```
+
+- for production:
+  - no watcher, just builds
+```
+npm run prod
+```
+

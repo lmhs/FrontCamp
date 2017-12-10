@@ -1,4 +1,7 @@
 const path = require('path');
+const webpack = require('webpack');
+
+const NODE_ENV = process.env.NODE_ENV || 'development';
 
 module.exports = {
   entry: ['whatwg-fetch', 'element-dataset', 'babel-polyfill', path.resolve(__dirname,'src/scripts/index.js')],
@@ -6,21 +9,35 @@ module.exports = {
     'filename': 'bundle.js',
     path: path.resolve(__dirname, 'dist/scripts')
   },
-  watch: true,
+  // watcher
+  watch: NODE_ENV === 'development',
   watchOptions: {
-    aggregateTimeout: 300
+    aggregateTimeout: 500,
+    ignored: /node_modules/,
+    poll: 1000
   },
-  devtool: 'inline-cheap-module-source-map',
+  // sourcemaps
+  devtool: NODE_ENV === 'development' ? 'inline-cheap-module-source-map' : false,
+  plugins: [
+    // enables production/dev/etc. environment
+    new webpack.DefinePlugin({
+      NODE_ENV: JSON.stringify(NODE_ENV)
+    })
+  ],
+  resolve: {
+    // resolve modules path and extension
+    extensions: ['.js'],
+    modules: [path.join(__dirname, 'src/scripts'), 'node_modules']
+  },
+  resolveLoader: {
+    // use 'babel' naming instead of 'babel-loader'
+    moduleExtensions: ['-loader']
+  },
   module: {
-    rules: [
-      {
-        test: /\.js$/,
-        include: path.join(__dirname, 'src/scripts'),
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader'
-        }
-      }
-    ]
+    loaders: [{
+      test: /\.js$/,
+      include: path.join(__dirname, 'src/scripts'),
+      loader: 'babel'
+    }]
   }
 }
