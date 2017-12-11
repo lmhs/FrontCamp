@@ -5,9 +5,11 @@ import elementDatasetPolyfill from 'element-dataset';
 import 'nodelist-foreach-polyfill';
 //// import NewsRequest from './NewsRequest.js';
 // Modules
+import {dataHelper} from './helper.js';
+import {headers, sourcesURL, categoriesParam} from './constants.js';
 import { categorize } from './Filter.js';
-import Article from './Article.js';
 import Category from './Category.js';
+import {showHeadlines, articlesShow} from './loadArticles.js';
 
 import 'styles.css';
 import './github-icon.js';
@@ -23,72 +25,12 @@ import './github-icon.js';
     Element.prototype.matches = Element.prototype.msMatchesSelector;
   }
 
-  // let and const
-  // settings for desctructuring assignment example
-  const settings = {
-    ['newsAPIURL'] : 'https://newsapi.org/v2'
-  };
-
-  let apiKey = 'bdbeeb170f8c47a2b97aa0f6252bfb90';
-  const headers = new Headers({
-    'X-Api-Key' : apiKey
-  });
-
-  // destructuring assignment
-  // property value shorthands
-  // TODO: check why if type=module nested objects throw reference error
-  const {
-    newsAPIURL,
-    sourcesParam : sourcesParam = 'sources=',
-    categoriesParam : categoriesParam = 'category=',
-    sourcesPath : sourcesPath = '/sources',
-    headlinesPath : headlinesPath = '/top-headlines'
-  } = settings;
-
-  // template literals
-  const sourcesURL = `${newsAPIURL}${sourcesPath}`;
-  const headlinesURL = `${newsAPIURL}${headlinesPath}?${sourcesParam}`;
   const select = document.getElementById('news-channels');
   const newsCategories = document.getElementById('news-categories');
-  const newsResults = document.getElementById('news-results');
+  const showArticlesBtn = document.getElementById('show-articles');
+  const articlesResults = document.getElementById('articles-results');
+  const articlesSection = document.querySelector('.js-articles-section');
 
-  // method definitions
-  let dataHelper = {
-    handleErrors(response) {
-      if (!response.ok) {
-        Promise.reject({
-          status : response.status,
-          statusText : response.statusText
-        });
-      }
-      return response;
-    }
-  };
-
-  async function fetchHeadlines(requestHeadlines) {
-    let response = await fetch(requestHeadlines);
-    response = await dataHelper.handleErrors(response);
-    const data = await response.json();
-
-    newsResults.innerHTML = '';
-    // array for of
-    for (const articleData of data.articles) {
-      if (articleData.title && articleData.description && articleData.url) {
-        const article = createArticle(articleData);
-        article.appendTo(newsResults);
-      }
-    }
-  }
-
-  // load headlines from a selected source
-  function showHeadlines(source) {
-    const newHeadlinesURL = headlinesURL + source;
-    const requestHeadlines = new Request(newHeadlinesURL, { headers });
-    fetchHeadlines(requestHeadlines)
-      .catch(error => {
-        console.error(`Error status: ${error.statusText}`)
-      });
-  }
 
   function loadSources(category) {
     let loadSourcesURL;
@@ -117,7 +59,8 @@ import './github-icon.js';
       if (typeof category === 'undefined') {
         newsCategories.insertAdjacentHTML('beforeend', createCategories(categorize(data.sources)));
       }
-      showHeadlines(data.sources[0].id);
+      articlesResults.innerHTML = '';
+      articlesSection.classList.add('is-hidden');
     }
 
     makeSourcesRequest(requestSources)
@@ -152,7 +95,9 @@ import './github-icon.js';
     }
   }
 
-  newsCategories.addEventListener('click', categoriesUpdate)
+  newsCategories.addEventListener('click', categoriesUpdate);
+
+  showArticlesBtn.addEventListener('click', articlesShow);
 
   function createCategories(categories) {
     // Array.from(categories.keys()) also works
@@ -182,9 +127,5 @@ import './github-icon.js';
 
   function createListItem(source) {
     return `<option value="${source.id}">${source.name}</option>`;
-  }
-
-  function createArticle(data) {
-    return new Article(data);
   }
 }
