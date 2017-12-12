@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 console.log(process.env.NODE_ENV);
 const env = process.env.NODE_ENV || 'development';
@@ -9,7 +10,8 @@ const commonConfig = {
   entry: ['whatwg-fetch', 'element-dataset', 'babel-polyfill', path.resolve(__dirname,'src/scripts/index.js')],
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist/scripts')
+    chunkFilename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'dist/')
   },
   // watcher
   watch: env === 'development',
@@ -22,6 +24,8 @@ const commonConfig = {
   devtool: env === 'development' ? 'inline-cheap-module-source-map' : false,
   // webpack-dev-server
   plugins: [
+    new CopyWebpackPlugin([
+      { from: path.resolve(__dirname, 'index.html'), to: path.resolve(__dirname, 'dist/')}]),
     new CleanWebpackPlugin(['dist']),
     // enables production/dev/etc. environment
     new webpack.DefinePlugin({
@@ -81,8 +85,7 @@ const developmentConfig = () => {
   const config = {
     devServer: {
       contentBase: [
-        path.resolve(__dirname, './'),
-        path.resolve(__dirname, './dist/scripts/')
+        path.resolve(__dirname, './dist/')
       ],
       stats: 'errors-only',
       host: process.env.HOST,
