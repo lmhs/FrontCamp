@@ -1,9 +1,10 @@
+// export default articlesShow;
+
 import 'whatwg-fetch';
 import elementDatasetPolyfill from 'element-dataset';
 import {headers, sourcesURL, headlinesURL} from './constants.js';
 import {dataHelper} from './helper.js';
 import Article from './Article.js';
-
 
 const select = document.getElementById('news-channels');
 const articlesResults = document.getElementById('articles-results');
@@ -34,7 +35,7 @@ function createArticle(data) {
 }
 
 // load headlines from a selected source
-export function showHeadlines(source) {
+function showHeadlines(source) {
   const newHeadlinesURL = headlinesURL + source;
   const requestHeadlines = new Request(newHeadlinesURL, { headers });
   fetchHeadlines(requestHeadlines)
@@ -43,10 +44,17 @@ export function showHeadlines(source) {
     });
 }
 
+function headlinesUpdate(event) {
+  const selectedValue = event.target.value;
+  showHeadlines(selectedValue);
+}
+
+select.addEventListener('change', headlinesUpdate);
+
 function getSource() {
   return select.value;
 }
 
-export function articlesShow() {
+export default function articlesShow() {
   showHeadlines(getSource());
 }

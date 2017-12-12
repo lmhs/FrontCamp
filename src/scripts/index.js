@@ -9,7 +9,6 @@ import {dataHelper} from './helper.js';
 import {headers, sourcesURL, categoriesParam} from './constants.js';
 import { categorize } from './Filter.js';
 import Category from './Category.js';
-import {showHeadlines, articlesShow} from './loadArticles.js';
 
 import 'styles.css';
 import './github-icon.js';
@@ -71,13 +70,6 @@ import './github-icon.js';
 
   loadSources();
 
-  function headlinesUpdate(event) {
-    const selectedValue = event.target.value;
-    showHeadlines(selectedValue);
-  }
-
-  select.addEventListener('change', headlinesUpdate);
-
   function categoriesUpdate(event) {
     let categories = newsCategories.querySelectorAll('.js-category');
     if (event.target && event.target.matches('.js-category')) {
@@ -95,9 +87,21 @@ import './github-icon.js';
     }
   }
 
+  function loadArticles() {
+    return import(
+      /* webpackChunkName: "0" */
+      /* webpackMode: "lazy" */
+      './loadArticles.js').then(module => {
+        module.default();
+      }
+    ).catch(err => {
+      console.log(`Chunk loading failed: ${err}`);
+    });
+  }
+
   newsCategories.addEventListener('click', categoriesUpdate);
 
-  showArticlesBtn.addEventListener('click', articlesShow);
+  showArticlesBtn.addEventListener('click', loadArticles);
 
   function createCategories(categories) {
     // Array.from(categories.keys()) also works
