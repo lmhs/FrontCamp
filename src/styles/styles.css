@@ -1,6 +1,7 @@
 html {
   box-sizing: border-box;
   height: 100%;
+  user-select: none;
 }
 
 *,
@@ -76,16 +77,18 @@ select {
   padding-bottom: 20px;
 }
 
-.section-block:not(:last-child) {
-  border-bottom: 1px solid rgba(0,0,0,.05);
+.section-block.is-hidden {
+  display: none;
+}
+
+.section-block:not(:first-child) {
+  border-top: 1px solid rgba(0,0,0,.05);
 }
 
 .article {
   border-radius: 2px;
   border: 1px solid rgba(0,0,0,.1);
   margin-bottom: 20px;
-  -webkit-column-break-inside: avoid;
-  page-break-inside: avoid;
   break-inside: avoid;
 }
 
@@ -134,6 +137,28 @@ select {
 
 .footer-link {
   color: #0092E3;
+}
+
+.github-icon {
+  height: 1rem;
+  margin: 0 4px;
+}
+
+.show-articles-btn {
+  margin-left: 8px;
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: bold;
+  color: rgba(0,0,0,.68);
+  background: rgba(0,0,0,.05);
+  border-radius: 3px;
+  border: none;
+}
+
+.show-articles-btn:hover,
+.show-articles-btn:active {
+  background: rgba(0,0,0,.2);
+  color: rgba(0,0,0,.68);
 }
 
 @media screen and (min-width: 500px) {

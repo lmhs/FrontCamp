@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>News</title>
-  <link href="./styles/styles.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext" rel="stylesheet">
 </head>
 <body>
@@ -17,19 +16,21 @@
       <section class="section-block">
         <h2>News Channel:</h2>
         <select class="channels" name="" id="news-channels"></select>
+        <button type="button" id="show-articles" class="show-articles-btn">Load Articles</button>
       </section>
-      <section class="section-block">
+      <section class="section-block is-hidden js-articles-section">
         <h2>Articles:</h2>
-        <section class="articles" id="news-results"></section>
+        <section class="articles" id="articles-results"></section>
       </section>
     </div>
   </main>
   <footer class="footer">
     <div class="container">
       <p>Powered by <a class="footer-link" target="_blank" href="https://newsapi.org">News API</a></p>
+      <p>Project on <a class="footer-link js-github-link" target="_blank" href="https://github.com/lmhs/FrontCamp">Github</a></p>
     </div>
   </footer>
   <!-- <script type="module" src="./src/scripts/index.js"></script> -->
-  <script type="text/javascript" src="./dist/scripts/bundle.js"></script>
+  <script type="text/javascript" src="./bundle.js"></script>
 </body>
 </html>
