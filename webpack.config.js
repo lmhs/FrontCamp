@@ -22,7 +22,9 @@ const commonConfig = {
     new webpack.DefinePlugin({
       env: JSON.stringify(env)
     }),
-    new webpack.NoEmitOnErrorsPlugin()
+    new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.NamedModulesPlugin(),
+    new webpack.HotModuleReplacementPlugin()
   ],
   resolve: {
     // resolve modules path and extension
@@ -78,6 +80,7 @@ const developmentConfig = () => {
       contentBase: [
         path.resolve(__dirname, './dist/')
       ],
+      hot: true,
       stats: 'errors-only',
       host: process.env.HOST,
       port: process.env.PORT
