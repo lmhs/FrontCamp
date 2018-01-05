@@ -14,17 +14,10 @@ Run webpack
 
 - for development:
 ```
-npm run watch
-```
-
-in another terminal window run server:
-
-```
 npm run dev
 ```
 
 - for production:
-  - no watcher, just builds
 ```
 npm run prod
 ```

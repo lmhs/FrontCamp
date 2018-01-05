@@ -2,9 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-
-console.log(process.env.NODE_ENV);
-const env = process.env.NODE_ENV || 'development';
+let env = process.env.NODE_ENV;
 
 const commonConfig = {
   entry: ['whatwg-fetch', 'element-dataset', 'babel-polyfill', path.resolve(__dirname,'src/scripts/index.js')],
@@ -13,15 +11,8 @@ const commonConfig = {
     chunkFilename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist/')
   },
-  // watcher
-  watch: env === 'development',
-  watchOptions: {
-    aggregateTimeout: 500,
-    ignored: /node_modules/,
-    poll: 1000
-  },
   // sourcemaps
-  devtool: env === 'development' ? 'inline-cheap-module-source-map' : false,
+  devtool: env === 'production' ? false : 'inline-cheap-module-source-map',
   // webpack-dev-server
   plugins: [
     new CopyWebpackPlugin([
@@ -97,6 +88,7 @@ const developmentConfig = () => {
 
 module.exports = () => {
   if (env === 'production') {
+    console.log(env);
     return productionConfig();
   }
 

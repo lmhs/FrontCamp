@@ -14,10 +14,6 @@ import 'styles.css';
 import './github-icon.js';
 
 {
-  if (env === 'development') {
-    console.log('Application is started');
-  }
-
   elementDatasetPolyfill();
 
   if (!Element.prototype.matches) {
