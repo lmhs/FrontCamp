@@ -15,21 +15,14 @@ Store.prototype.getState = function () {
   return this.state;
 }
 
-// Store.prototype.setArticles = function (articles) {
-//   this.state = { articles };
-//   this.callback();
-// }
-// callback => listener
-Store.prototype.subscribe1 = function (callback) {
-  this.callback = callback;
-  console.log('subscribed!');
-}
-
 Store.prototype.subscribe = function (listener) {
   this.listeners.push(listener);
+  return () => {
+    this.listeners = this.listeners.filter(l => l !== listener);
+  }
 }
 
 Store.prototype.dispatch = function(action) {
-  this.state.articles = this.reducer(this.getState(), action);
+  this.state = this.reducer(this.getState(), action);
   this.listeners.forEach((listener) => listener())
 }

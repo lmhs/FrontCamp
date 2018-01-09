@@ -10,6 +10,7 @@ import {createAction, createStore} from './Reredux/Reredux.js';
 const select = document.getElementById('news-channels');
 const articlesResults = document.getElementById('articles-results');
 const articlesSection = document.querySelector('.js-articles-section');
+const filterArticlesBtn = document.getElementById('filter-articles');
 let store = createStore(loadArticlesReducer);
 let articles = [];
 store.subscribe(renderArticles);
@@ -21,6 +22,12 @@ async function fetchHeadlines(requestHeadlines) {
 
   return data;
 }
+
+function filterArticles() {
+  store.dispatch(createAction('ARTICLES_FILTERED'));
+}
+
+filterArticlesBtn.addEventListener('click', filterArticles);
 
 function renderArticles() {
   const articles = store.getState().articles;
@@ -49,7 +56,7 @@ function showHeadlines(source) {
   const requestHeadlines = new Request(newHeadlinesURL, { headers });
   fetchHeadlines(requestHeadlines)
     .then((data) => {
-      articles = data.articles.slice();
+      articles = [...data.articles];
       store.dispatch(createAction('ARTICLES_LOADED'));
     })
     .catch(error => {
@@ -67,12 +74,25 @@ function getSource() {
   return select.value;
 }
 
-function loadArticlesReducer(state = {}, action) {
+function filterArticleReducer(state = {}, action) {
+  switch (action.type) {
+    case 'ARTICLES_FILTERED_NO_AUTHOR':
+      return state.author ? {} : state;
+      break;
+    default:
+      return state
+  }
+}
+
+function loadArticlesReducer(state = {articles:[]}, action) {
   switch (action.type) {
     case 'ARTICLES_LOADED':
-      return articles;
+      return Object.assign({}, state, {articles});
+      break;
     case 'ARTICLES_FILTERED':
-      return filterArticles(state.articles)
+      let filteredArticles = state.articles.map(article => filterArticleReducer(article, createAction('ARTICLES_FILTERED_NO_AUTHOR')));
+      return Object.assign({}, state, {articles: filteredArticles});
+      break;
     default:
       return state
   }
