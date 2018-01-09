@@ -1,9 +1,13 @@
-import Store from './Store.js';
-
-export default function ActionCreator(type) {
+// Creational pattern
+// Prototype
+// creates and returns new object which prototype is action
+export default function ActionCreator(type, text) {
   const action = {
     type
   };
-  console.log(action);
-  return action
+  return Object.create(action, text ? {
+    text: {
+      value: text
+    }
+  } : undefined);
 }

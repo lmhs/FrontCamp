@@ -11,7 +11,7 @@ const select = document.getElementById('news-channels');
 const articlesResults = document.getElementById('articles-results');
 const articlesSection = document.querySelector('.js-articles-section');
 const filterArticlesBtn = document.getElementById('filter-articles');
-let store = createStore(loadArticlesReducer);
+let store = createStore(articlesReducer);
 let articles = [];
 store.subscribe(renderArticles);
 
@@ -24,7 +24,7 @@ async function fetchHeadlines(requestHeadlines) {
 }
 
 function filterArticles() {
-  store.dispatch(createAction('ARTICLES_FILTERED'));
+  store.dispatch(createAction('ARTICLES_FILTERED', 'Filtering articles'));
 }
 
 filterArticlesBtn.addEventListener('click', filterArticles);
@@ -74,7 +74,7 @@ function getSource() {
   return select.value;
 }
 
-function filterArticleReducer(state = {}, action) {
+function articleReducer(state = {}, action) {
   switch (action.type) {
     case 'ARTICLES_FILTERED_NO_AUTHOR':
       return state.author ? {} : state;
@@ -84,13 +84,18 @@ function filterArticleReducer(state = {}, action) {
   }
 }
 
-function loadArticlesReducer(state = {articles:[]}, action) {
+// Structural pattern
+// Reducer Composition
+// Using articleReducer for single article and articlesReducer for a group of articles
+function articlesReducer(state = { articles: [] }, action) {
   switch (action.type) {
     case 'ARTICLES_LOADED':
-      return Object.assign({}, state, {articles});
+      return Object.assign({}, state, { articles });
       break;
     case 'ARTICLES_FILTERED':
-      let filteredArticles = state.articles.map(article => filterArticleReducer(article, createAction('ARTICLES_FILTERED_NO_AUTHOR')));
+      let filteredArticles = state.articles.map(article => {
+        articleReducer(article, createAction('ARTICLES_FILTERED_NO_AUTHOR', 'Filtering articles'))
+      });
       return Object.assign({}, state, {articles: filteredArticles});
       break;
     default:
