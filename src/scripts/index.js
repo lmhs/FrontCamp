@@ -7,17 +7,13 @@ import 'nodelist-foreach-polyfill';
 // Modules
 import {dataHelper} from './helper.js';
 import {headers, sourcesURL, categoriesParam} from './constants.js';
-import { categorize } from './Filter.js';
+import {categorize} from './Filter.js';
 import Category from './Category.js';
 
 import 'styles.css';
 import './github-icon.js';
 
 {
-  if (env === 'development') {
-    console.log('Application is started');
-  }
-
   elementDatasetPolyfill();
 
   if (!Element.prototype.matches) {

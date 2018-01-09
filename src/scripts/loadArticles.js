@@ -5,24 +5,40 @@ import elementDatasetPolyfill from 'element-dataset';
 import {headers, sourcesURL, headlinesURL} from './constants.js';
 import {dataHelper} from './helper.js';
 import Article from './Article.js';
+import {createAction, createStore} from './Reredux/Reredux.js';
 
 const select = document.getElementById('news-channels');
 const articlesResults = document.getElementById('articles-results');
 const articlesSection = document.querySelector('.js-articles-section');
+const filterArticlesBtn = document.getElementById('filter-articles');
+let store = createStore(articlesReducer);
+let articles = [];
+store.subscribe(renderArticles);
 
 async function fetchHeadlines(requestHeadlines) {
   let response = await fetch(requestHeadlines);
   response = await dataHelper.handleErrors(response);
   const data = await response.json();
 
+  return data;
+}
+
+function filterArticles() {
+  store.dispatch(createAction('ARTICLES_FILTERED', 'Filtering articles'));
+}
+
+filterArticlesBtn.addEventListener('click', filterArticles);
+
+function renderArticles() {
+  const articles = store.getState().articles;
   articlesResults.innerHTML = '';
 
-  if (data.articles.length) {
+  if (articles.length) {
     articlesSection.classList.remove('is-hidden');
   }
 
   // array for of
-  for (const articleData of data.articles) {
+  for (const articleData of articles) {
     if (articleData.title && articleData.description && articleData.url) {
       const article = createArticle(articleData);
       article.appendTo(articlesResults);
@@ -39,20 +55,52 @@ function showHeadlines(source) {
   const newHeadlinesURL = headlinesURL + source;
   const requestHeadlines = new Request(newHeadlinesURL, { headers });
   fetchHeadlines(requestHeadlines)
+    .then((data) => {
+      articles = [...data.articles];
+      store.dispatch(createAction('ARTICLES_LOADED'));
+    })
     .catch(error => {
       console.error(`Error status: ${error.statusText}`)
     });
 }
 
 function headlinesUpdate(event) {
-  const selectedValue = event.target.value;
-  showHeadlines(selectedValue);
+  showHeadlines(event.target.value);
 }
 
 select.addEventListener('change', headlinesUpdate);
 
 function getSource() {
   return select.value;
+}
+
+function articleReducer(state = {}, action) {
+  switch (action.type) {
+    case 'ARTICLES_FILTERED_NO_AUTHOR':
+      return state.author ? {} : state;
+      break;
+    default:
+      return state
+  }
+}
+
+// Structural pattern
+// Reducer Composition
+// Using articleReducer for single article and articlesReducer for a group of articles
+function articlesReducer(state = { articles: [] }, action) {
+  switch (action.type) {
+    case 'ARTICLES_LOADED':
+      return Object.assign({}, state, { articles });
+      break;
+    case 'ARTICLES_FILTERED':
+      let filteredArticles = state.articles.map(article => {
+        articleReducer(article, createAction('ARTICLES_FILTERED_NO_AUTHOR', 'Filtering articles'))
+      });
+      return Object.assign({}, state, {articles: filteredArticles});
+      break;
+    default:
+      return state
+  }
 }
 
 export default function articlesShow() {

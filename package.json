@@ -4,8 +4,7 @@
   "description": "Repository containing tasks for FrontCamp",
   "main": "index.js",
   "scripts": {
-    "watch": "webpack --watch",
-    "dev": "NODE_ENV=development webpack-dev-server --open",
+    "dev": "webpack-dev-server --progress --open",
     "prod": "NODE_ENV=production webpack -p"
   },
   "repository": {
