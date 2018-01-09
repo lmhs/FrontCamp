@@ -94,7 +94,7 @@ function articlesReducer(state = { articles: [] }, action) {
       break;
     case 'ARTICLES_FILTERED':
       let filteredArticles = state.articles.map(article => {
-        articleReducer(article, createAction('ARTICLES_FILTERED_NO_AUTHOR', 'Filtering articles'))
+        return articleReducer(article, createAction('ARTICLES_FILTERED_NO_AUTHOR', 'Filtering articles'));
       });
       return Object.assign({}, state, {articles: filteredArticles});
       break;
