@@ -11,6 +11,7 @@ const select = document.getElementById('news-channels');
 const articlesResults = document.getElementById('articles-results');
 const articlesSection = document.querySelector('.js-articles-section');
 let store = createStore(loadArticlesReducer);
+let articles = [];
 store.subscribe(renderArticles);
 
 async function fetchHeadlines(requestHeadlines) {
@@ -18,12 +19,11 @@ async function fetchHeadlines(requestHeadlines) {
   response = await dataHelper.handleErrors(response);
   const data = await response.json();
 
-  store.setArticles(data.articles);
+  return data;
 }
 
 function renderArticles() {
   const articles = store.getState().articles;
-  console.log(articles);
   articlesResults.innerHTML = '';
 
   if (articles.length) {
@@ -48,13 +48,17 @@ function showHeadlines(source) {
   const newHeadlinesURL = headlinesURL + source;
   const requestHeadlines = new Request(newHeadlinesURL, { headers });
   fetchHeadlines(requestHeadlines)
+    .then((data) => {
+      articles = data.articles.slice();
+      store.dispatch(createAction('ARTICLES_LOADED'));
+    })
     .catch(error => {
       console.error(`Error status: ${error.statusText}`)
     });
 }
 
-function headlinesUpdate() {
-  store.dispatch(createAction('ARTICLES_CHANGE'));
+function headlinesUpdate(event) {
+  showHeadlines(event.target.value);
 }
 
 select.addEventListener('change', headlinesUpdate);
@@ -63,14 +67,17 @@ function getSource() {
   return select.value;
 }
 
-function loadArticlesReducer(action) {
+function loadArticlesReducer(state = {}, action) {
   switch (action.type) {
-    case 'ARTICLES_LOAD':
-    case 'ARTICLES_CHANGE':
-      showHeadlines(getSource());
+    case 'ARTICLES_LOADED':
+      return articles;
+    case 'ARTICLES_FILTERED':
+      return filterArticles(state.articles)
+    default:
+      return state
   }
 }
 
 export default function articlesShow() {
-  store.dispatch(createAction('ARTICLES_LOAD'));
+  showHeadlines(getSource());
 }
