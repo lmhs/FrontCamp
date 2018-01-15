@@ -1,10 +1,15 @@
+// Structural pattern
+// Adapter
+// Category uses the same method render as the Article module
+// while Tag uses several parameters in constructor and buildLayout method
+import Tag from './Tag.js';
+
 export default class Category {
   constructor(category) {
-    this.selected = category.selected;
-    this.value = category.value;
-  }
-
-  render() {
-    return `<a href="javascript:void(0);" class="category${[this.selected ? ' category--is-selected' : '']} js-category" data-value="${this.value}">${this.value}</a>`
+    const tag = new Tag(category.value, category.selected);
+    const x = Object.assign({}, tag, {
+      render : tag.buildLayout
+    });
+    return x;
   }
 }

@@ -144,8 +144,7 @@ select {
   margin: 0 4px;
 }
 
-.show-articles-btn {
-  margin-left: 8px;
+.btn {
   padding: 10px 20px;
   font-size: 15px;
   font-weight: bold;
@@ -155,10 +154,18 @@ select {
   border: none;
 }
 
-.show-articles-btn:hover,
-.show-articles-btn:active {
+.btn:hover,
+.btn:active {
   background: rgba(0,0,0,.2);
   color: rgba(0,0,0,.68);
+}
+
+.show-articles-btn {
+  margin-left: 8px;
+}
+
+.filter-articles-btn {
+  margin-bottom: 8px;
 }
 
 @media screen and (min-width: 500px) {
